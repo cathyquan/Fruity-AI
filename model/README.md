@@ -5,3 +5,6 @@
 2. Then, install TensorFlow with pip.
     * For CPU users: `pip install tensorflow`
     * For GPU users: `pip install tensorflow[and-cuda]`
+
+# Install OpenCV
+Run this command: `pip install opencv-python`
