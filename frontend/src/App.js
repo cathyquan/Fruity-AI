@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
+import './App.css';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
-function App() {
-  return (
-    <div>
-      <h1>Fruit Identifier</h1>
-      <b>Made by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</b>
-      <ImageUploader />
-    </div>
-  );
-}
+const s3 = new AWS.S3({
+  accessKeyId: 'YOUR_ACCESS_KEY_ID',
+  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+  region: 'YOUR_S3_REGION'
+});
 
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
   const [result, setResult] = useState('');
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    setImage(URL.createObjectURL(event.target.files[0]));
   };
 
   const handleUpload = async () => {
@@ -31,22 +30,38 @@ function ImageUploader() {
 
     try {
       await s3.upload(params).promise();
-      setImageUrl(`https://${params.Bucket}.s3.amazonaws.com/${params.Key}`);
-      const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
-      setResult(response.data.result);
+      setImageUrl(URL.createObjectURL(selectedFile));
+      // Clear the selected file after upload
+      setSelectedFile(null);
+      // For further processing of the image (e.g., sending it to the backend), uncomment the following lines
+      // const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
+      // setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
   return (
-    <div>
+    <div className="App">
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
-      {imageUrl && <img src={imageUrl} alt="Uploaded" />}
       {result && <div>Result: {result}</div>}
+      {imageUrl && <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />}
+      <br />
+      {image && <img src={image} alt="Uploaded" style={{ maxWidth: '50%', marginTop: '10px' }} />}
     </div>
   );
 }
 
-export default ImageUploader;
+function App() {
+  return (
+    <div className="App-header">
+      <h1>Fruit Identifier</h1>
+      <b>Made by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</b>
+      <br />
+      <ImageUploader />
+    </div>
+  );
+}
+
+export default App;
