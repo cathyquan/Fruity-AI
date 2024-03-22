@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
-import './App.css';
+import axios from 'axios';
+import AWS from 'aws-sdk';
 
 function App() {
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
-    // Here you can connect with your models trained in .jpynb
-    // and perform any necessary processing on the uploaded image
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Fruit Identifier Image Upload</h1>
-        <b>Created by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</b>
-        <div>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-        </div>
-        {selectedImage && (
-          <img src={selectedImage} alt="Uploaded" className="uploaded-image" />
-        )}
-      </header>
+    <div>
+      <h1>Fruit Identifier</h1>
+      <b>Made by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</b>
+      <ImageUploader />
     </div>
   );
 }
 
-export default App;
+function ImageUploader() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    const params = {
+      Bucket: 'YOUR_S3_BUCKET_NAME',
+      Key: selectedFile.name,
+      Body: selectedFile,
+      ACL: 'public-read' // Optional, set ACL as per your requirement
+    };
+
+    try {
+      await s3.upload(params).promise();
+      setImageUrl(`https://${params.Bucket}.s3.amazonaws.com/${params.Key}`);
+      const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
+      setResult(response.data.result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+      {imageUrl && <img src={imageUrl} alt="Uploaded" />}
+      {result && <div>Result: {result}</div>}
+    </div>
+  );
+}
+
+export default ImageUploader;
