@@ -12,6 +12,12 @@ function App() {
   );
 }
 
+const s3 = new AWS.S3({
+  accessKeyId: 'YOUR_ACCESS_KEY_ID',
+  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+  region: 'YOUR_S3_REGION'
+});
+
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
@@ -31,9 +37,9 @@ function ImageUploader() {
 
     try {
       await s3.upload(params).promise();
-      setImageUrl(`https://${params.Bucket}.s3.amazonaws.com/${params.Key}`);
-      const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
-      setResult(response.data.result);
+      //setImageUrl(`https://${params.Bucket}.s3.amazonaws.com/${params.Key}`);
+      //const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
+      //setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
     }
