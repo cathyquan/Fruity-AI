@@ -8,3 +8,6 @@
 
 # Install OpenCV
 Run this command: `pip install opencv-python`
+
+# Install Pillow
+Run this command: `pip install pillow`
