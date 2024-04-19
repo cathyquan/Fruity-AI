@@ -61,25 +61,26 @@ function ImageUploader() {
   );
 }
 
-function FetchBackendString(imageUploaded) {
+function FetchBackendString({ imageUploaded, setImageUploaded }) {
   const [backendString, setBackendString] = useState('');
 
-  useEffect((imageUploaded) => {
-      // Make sure to use the correct URL and port where your Flask app is running
+  useEffect(() => {
+    if (imageUploaded) {
       axios.get('http://localhost:3001/get-prediction')
-          .then(response => {
-              // Handle the response from the server
-              setBackendString(response.data.prediction);
-          })
-          .catch(error => {
-              console.error('There was an error fetching the prediction:', error);
-          });
-  }, [imageUploaded]);  // The empty array ensures this effect runs only once after the initial render
+        .then(response => {
+          setBackendString(response.data.prediction);
+          setImageUploaded(false);  // Set imageUploaded back to false
+        })
+        .catch(error => {
+          console.error('There was an error fetching the prediction:', error);
+        });
+    }
+  }, [imageUploaded, setImageUploaded]);  // Include setImageUploaded in the dependency array
 
   return (
-      <div>
-          <p>Prediction from backend: {backendString}</p>
-      </div>
+    <div>
+      <p>Prediction from backend: {backendString}</p>
+    </div>
   );
 }
 
@@ -90,8 +91,8 @@ function App() {
       <h1>Fruit Identifier</h1>
       <b>Made by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</b>
       <br />
-      <ImageUploader />
-      <FetchBackendString />
+      <ImageUploader setImageUploaded={setImageUploaded} />
+      <FetchBackendString imageUploaded={imageUploaded} setImageUploaded={setImageUploaded} />
     </div>
   );
 }
