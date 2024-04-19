@@ -3,11 +3,14 @@ import './App.css';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
-const s3 = new AWS.S3({
-  accessKeyId: 'YOUR_ACCESS_KEY_ID',
-  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
-  region: 'YOUR_S3_REGION'
+// Hard-coded credentials for development purposes only (NOT recommended for production)
+AWS.config.update({
+  accessKeyId: 'AKIAXU7C5FZ5GQMBWN5S',
+  secretAccessKey: 'ZItsL+izdouOAut4TyV9ECfwXsjZRfyvtj5bFBmT',
+  region: 'us-east-2'
 });
+
+const s3 = new AWS.S3();
 
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,49 +22,30 @@ function ImageUploader() {
     setSelectedFile(event.target.files[0]);
     setImage(URL.createObjectURL(event.target.files[0]));
   };
-  
+
   const handleUpload = async () => {
-    const url = 'https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload';
-  
+    const params = {
+      Bucket: 'frubucket', // Updated bucket name
+      Key: selectedFile.name,
+      Body: selectedFile,
+      ContentType: selectedFile.type,
+      //ACL: 'public-read' // Optional, set ACL as per your requirement
+    };
+
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        body: selectedFile,
-        headers: {
-          'Content-Type': selectedFile.type,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-  
-      const data = await response.json();
-      setImageUrl(data.imageUrl);
-      setResult('Upload successful');
+      const uploadResponse = await s3.upload(params).promise();
+      const uploadedImageUrl = uploadResponse.Location; // URL of the uploaded image
+      setImageUrl(uploadedImageUrl); // Set the image URL to the state
+      setSelectedFile(null); // Optionally clear the selected file after upload
+
+      // Further processing of the image, sending it to the backend
+      const response = await axios.post('https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload', { imageUrl: uploadedImageUrl });
+      setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
       setResult('Upload failed');
     }
   };
-
-  // const handleUpload = async () => {
-  //   const params = {
-  //     Bucket: 'YOUR_S3_BUCKET_NAME',
-  //     Key: selectedFile.name,
-  //     Body: selectedFile,
-  //     ACL: 'public-read' // Optional, set ACL as per your requirement
-  //   };
-
-  //   try {
-  //     const uploadResponse = await s3.upload(params).promise();
-  //     setImageUrl(uploadResponse.Location);
-  //     setResult('Upload successful');
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     setResult('Upload failed');
-  //   }
-  // };
 
   return (
     <div className="App">
