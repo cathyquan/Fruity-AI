@@ -3,11 +3,14 @@ import './App.css';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
-const s3 = new AWS.S3({
-  accessKeyId: 'YOUR_ACCESS_KEY_ID',
-  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
-  region: 'YOUR_S3_REGION'
+// Hard-coded credentials for development purposes only (NOT recommended for production)
+AWS.config.update({
+  accessKeyId: 'AKIAXU7C5FZ5GQMBWN5S',
+  secretAccessKey: 'ZItsL+izdouOAut4TyV9ECfwXsjZRfyvtj5bFBmT',
+  region: 'us-east-2'
 });
+
+const s3 = new AWS.S3();
 
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -22,22 +25,25 @@ function ImageUploader() {
 
   const handleUpload = async () => {
     const params = {
-      Bucket: 'YOUR_S3_BUCKET_NAME',
+      Bucket: 'frubucket', // Updated bucket name
       Key: selectedFile.name,
       Body: selectedFile,
-      ACL: 'public-read' // Optional, set ACL as per your requirement
+      ContentType: selectedFile.type,
+      //ACL: 'public-read' // Optional, set ACL as per your requirement
     };
 
     try {
-      await s3.upload(params).promise();
-      setImageUrl(URL.createObjectURL(selectedFile));
-      // Clear the selected file after upload
-      setSelectedFile(null);
-      // For further processing of the image (e.g., sending it to the backend), uncomment the following lines
-      // const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
-      // setResult(response.data.result);
+      const uploadResponse = await s3.upload(params).promise();
+      const uploadedImageUrl = uploadResponse.Location; // URL of the uploaded image
+      setImageUrl(uploadedImageUrl); // Set the image URL to the state
+      setSelectedFile(null); // Optionally clear the selected file after upload
+
+      // Further processing of the image, sending it to the backend
+      const response = await axios.post('https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload', { imageUrl: uploadedImageUrl });
+      setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
+      setResult('Upload failed');
     }
   };
 
