@@ -11,3 +11,9 @@ Run this command: `pip install opencv-python`
 
 # Install Pillow
 Run this command: `pip install pillow`
+
+# To Run the Backend
+Install these modules:
+1. `pip install boto3`
+2. `pip install Flask`
+3. `pip install flask_cors`
