@@ -29,15 +29,12 @@ function ImageUploader() {
     };
 
     try {
-      await s3.upload(params).promise();
-      setImageUrl(URL.createObjectURL(selectedFile));
-      // Clear the selected file after upload
-      setSelectedFile(null);
-      // For further processing of the image (e.g., sending it to the backend), uncomment the following lines
-      // const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
-      // setResult(response.data.result);
+      const uploadResponse = await s3.upload(params).promise();
+      setImageUrl(uploadResponse.Location);
+      setResult('Upload successful');
     } catch (error) {
       console.error('Error:', error);
+      setResult('Upload failed');
     }
   };
 
