@@ -19,24 +19,49 @@ function ImageUploader() {
     setSelectedFile(event.target.files[0]);
     setImage(URL.createObjectURL(event.target.files[0]));
   };
-
+  
   const handleUpload = async () => {
-    const params = {
-      Bucket: 'YOUR_S3_BUCKET_NAME',
-      Key: selectedFile.name,
-      Body: selectedFile,
-      ACL: 'public-read' // Optional, set ACL as per your requirement
-    };
-
+    const url = 'https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload';
+  
     try {
-      const uploadResponse = await s3.upload(params).promise();
-      setImageUrl(uploadResponse.Location);
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: selectedFile,
+        headers: {
+          'Content-Type': selectedFile.type,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+  
+      const data = await response.json();
+      setImageUrl(data.imageUrl);
       setResult('Upload successful');
     } catch (error) {
       console.error('Error:', error);
       setResult('Upload failed');
     }
   };
+
+  // const handleUpload = async () => {
+  //   const params = {
+  //     Bucket: 'YOUR_S3_BUCKET_NAME',
+  //     Key: selectedFile.name,
+  //     Body: selectedFile,
+  //     ACL: 'public-read' // Optional, set ACL as per your requirement
+  //   };
+
+  //   try {
+  //     const uploadResponse = await s3.upload(params).promise();
+  //     setImageUrl(uploadResponse.Location);
+  //     setResult('Upload successful');
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     setResult('Upload failed');
+  //   }
+  // };
 
   return (
     <div className="App">
