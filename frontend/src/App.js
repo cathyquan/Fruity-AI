@@ -52,7 +52,8 @@ function ImageUploader() {
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
       {result && <div>Result: {result}</div>}
-      {imageUrl && <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />}
+      {selectedFile && <div>Uploaded</div>}
+      {/* {imageUrl && <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />} */}
       <br />
       {image && <img src={image} alt="Uploaded" style={{ maxWidth: '50%', marginTop: '10px' }} />}
     </div>
@@ -60,25 +61,25 @@ function ImageUploader() {
 }
 
 function FetchBackendString() {
-    const [backendString, setBackendString] = useState('');
+  const [backendString, setBackendString] = useState('');
 
-    useEffect(() => {
-        // Make sure to use the correct URL and port where your Flask app is running
-        axios.get('http://localhost:3001/get-string')
-            .then(response => {
-                // Handle the response from the server
-                setBackendString(response.data);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the string:', error);
-            });
-    }, []);  // The empty array ensures this effect runs only once after the initial render
+  useEffect(() => {
+      // Make sure to use the correct URL and port where your Flask app is running
+      axios.get('http://localhost:3001/get-prediction')
+          .then(response => {
+              // Handle the response from the server
+              setBackendString(response.data.prediction);
+          })
+          .catch(error => {
+              console.error('There was an error fetching the prediction:', error);
+          });
+  }, []);  // The empty array ensures this effect runs only once after the initial render
 
-    return (
-        <div>
-            <p>Data from backend: {backendString}</p>
-        </div>
-    );
+  return (
+      <div>
+          <p>Prediction from backend: {backendString}</p>
+      </div>
+  );
 }
 
 function App() {
