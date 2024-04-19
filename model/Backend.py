@@ -106,10 +106,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/get-string', methods=['GET'])
+@app.route('/get-prediction', methods=['GET'])
 def get_string():
-    string = predicted_category_name
-    return jsonify({'string': string})
+    prediction = predicted_category_name
+    return jsonify({'prediction': prediction})
 
 if __name__ == '__main__':
     app.run(debug=True, port=3001)

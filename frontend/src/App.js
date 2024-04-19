@@ -41,6 +41,7 @@ function ImageUploader() {
       // Further processing of the image, sending it to the backend
       const response = await axios.post('https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload', { imageUrl: uploadedImageUrl });
       setResult(response.data.result);
+      setImageUploaded(true);
     } catch (error) {
       console.error('Error:', error);
       setResult('Upload failed');
@@ -60,10 +61,10 @@ function ImageUploader() {
   );
 }
 
-function FetchBackendString() {
+function FetchBackendString(imageUploaded) {
   const [backendString, setBackendString] = useState('');
 
-  useEffect(() => {
+  useEffect((imageUploaded) => {
       // Make sure to use the correct URL and port where your Flask app is running
       axios.get('http://localhost:3001/get-prediction')
           .then(response => {
@@ -73,7 +74,7 @@ function FetchBackendString() {
           .catch(error => {
               console.error('There was an error fetching the prediction:', error);
           });
-  }, []);  // The empty array ensures this effect runs only once after the initial render
+  }, [imageUploaded]);  // The empty array ensures this effect runs only once after the initial render
 
   return (
       <div>
@@ -83,6 +84,7 @@ function FetchBackendString() {
 }
 
 function App() {
+  const [imageUploaded, setImageUploaded] = useState(false);
   return (
     <div className="App-header">
       <h1>Fruit Identifier</h1>
