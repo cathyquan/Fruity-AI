@@ -24,24 +24,23 @@ function ImageUploader() {
   };
 
   const handleUpload = async () => {
-    const url = 'https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload';
-  
+    const params = {
+      Bucket: 'frubucket', // Updated bucket name
+      Key: selectedFile.name,
+      Body: selectedFile,
+      ContentType: selectedFile.type,
+      //ACL: 'public-read' // Optional, set ACL as per your requirement
+    };
+
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        body: selectedFile,
-        headers: {
-          'Content-Type': selectedFile.type,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-  
-      const data = await response.json();
-      setImageUrl(data.imageUrl);
-      setResult('Upload successful');
+      const uploadResponse = await s3.upload(params).promise();
+      const uploadedImageUrl = uploadResponse.Location; // URL of the uploaded image
+      setImageUrl(uploadedImageUrl); // Set the image URL to the state
+      setSelectedFile(null); // Optionally clear the selected file after upload
+
+      // Further processing of the image, sending it to the backend
+      const response = await axios.post('https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload', { imageUrl: uploadedImageUrl });
+      setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
       setResult('Upload failed');
