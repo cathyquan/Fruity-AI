@@ -22,30 +22,46 @@ function ImageUploader() {
     setSelectedFile(event.target.files[0]);
     setImage(URL.createObjectURL(event.target.files[0]));
   };
-
+  
   const handleUpload = async () => {
     const params = {
-      Bucket: 'frubucket', // Updated bucket name
+      Bucket: 'YOUR_S3_BUCKET_NAME',
       Key: selectedFile.name,
       Body: selectedFile,
-      ContentType: selectedFile.type,
-      //ACL: 'public-read' // Optional, set ACL as per your requirement
+      ACL: 'public-read' // Optional, set ACL as per your requirement
     };
 
     try {
-      const uploadResponse = await s3.upload(params).promise();
-      const uploadedImageUrl = uploadResponse.Location; // URL of the uploaded image
-      setImageUrl(uploadedImageUrl); // Set the image URL to the state
-      setSelectedFile(null); // Optionally clear the selected file after upload
-
-      // Further processing of the image, sending it to the backend
-      const response = await axios.post('https://7poz2qtm2b.execute-api.us-east-2.amazonaws.com/dev/frubucket/upload', { imageUrl: uploadedImageUrl });
-      setResult(response.data.result);
+      await s3.upload(params).promise();
+      setImageUrl(URL.createObjectURL(selectedFile));
+      // Clear the selected file after upload
+      setSelectedFile(null);
+      // For further processing of the image (e.g., sending it to the backend), uncomment the following lines
+      // const response = await axios.post('http://your-backend-url/process-image', { imageUrl });
+      // setResult(response.data.result);
     } catch (error) {
       console.error('Error:', error);
       setResult('Upload failed');
     }
   };
+
+  // const handleUpload = async () => {
+  //   const params = {
+  //     Bucket: 'YOUR_S3_BUCKET_NAME',
+  //     Key: selectedFile.name,
+  //     Body: selectedFile,
+  //     ACL: 'public-read' // Optional, set ACL as per your requirement
+  //   };
+
+  //   try {
+  //     const uploadResponse = await s3.upload(params).promise();
+  //     setImageUrl(uploadResponse.Location);
+  //     setResult('Upload successful');
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     setResult('Upload failed');
+  //   }
+  // };
 
   return (
     <div className="App">
