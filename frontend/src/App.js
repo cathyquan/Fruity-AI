@@ -43,7 +43,7 @@ function ImageUploader({ onUploadSuccess }) {
     <div>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
-      {result && <div>Result: {result}</div>}
+      {result && <div>{result}</div>}
       {image && <img src={image} alt="Uploaded" style={{ maxWidth: '50%', marginTop: '10px' }} />}
     </div>
   );
@@ -79,6 +79,7 @@ function App() {
   return (
     <div className="App-header">
       <h1>Fruit Identifier</h1>
+      <p>Created by Kushal Gaddam, Justin Galin, Helena He, Cathy Quan, and Taylor Tillander</p>
       <ImageUploader onUploadSuccess={incrementUploadCount} />
       <FetchBackendString uploadCount={uploadCount} />
     </div>
