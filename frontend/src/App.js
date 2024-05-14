@@ -4,9 +4,9 @@ import axios from 'axios';
 import AWS from 'aws-sdk';
 
 AWS.config.update({
-  accessKeyId: 'AKIAXU7C5FZ5GQMBWN5S',  // Replace with your access key ID
-  secretAccessKey: 'ZItsL+izdouOAut4TyV9ECfwXsjZRfyvtj5bFBmT',  // Replace with your secret access key
-  region: 'us-east-2'
+  accessKeyId: 'YOUR_ACCESS_KEY',  // Replace with your access key ID or use environment variables
+  secretAccessKey: 'YOUR_SECRET_KEY',  // Replace with your secret access key or use environment variables
+  region: 'YOUR_REGION' // Replace with your region or use environment variables
 });
 
 const s3 = new AWS.S3();

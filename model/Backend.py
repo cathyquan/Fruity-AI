@@ -16,9 +16,9 @@ CORS(app)
 def get_string():
     # Create a session using your AWS credentials
     session = boto3.Session(
-        aws_access_key_id='AKIAXU7C5FZ5GQMBWN5S',
-        aws_secret_access_key='ZItsL+izdouOAut4TyV9ECfwXsjZRfyvtj5bFBmT',
-        region_name='us-east-2'
+        aws_access_key_id='YOUR_ACCESS_KEY', # Replace with your access key or use environment variables
+        aws_secret_access_key='YOUR_SECRET_KEY', # Replace with your secret key or use environment variables
+        region_name='YOUR_REGION' # Replace with your region or use environment variables
     )
 
     # Create an S3 resource object using the session
