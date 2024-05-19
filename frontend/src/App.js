@@ -5,10 +5,16 @@ import AWS from 'aws-sdk';
 
 require('dotenv').config();
 
+/* created a .env file that holds the following secrets, input your access key, secret key, and region for it to work:
+REACT_APP_ACCESS_KEY=youraccesskey
+REACT_APP_SECRET_KEY=yoursecretkey
+REACT_APP_REGION=yourregion
+*/
+
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY,  // Replace with your access key ID or use environment variables
-  secretAccessKey: process.env.AWS_SECRET_KEY,  // Replace with your secret access key or use environment variables
-  region: process.env.AWS_REGION // Replace with your region or use environment variables
+  accessKeyId: process.env.REACT_APP_ACCESS_KEY,  // Replace with your access key ID or use environment variables
+  secretAccessKey: process.env.REACT_APP_SECRET_KEY,  // Replace with your secret access key or use environment variables
+  region: process.env.REACT_APP_REGION // Replace with your region or use environment variables
 });
 
 const s3 = new AWS.S3();
