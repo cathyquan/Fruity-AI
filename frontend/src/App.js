@@ -3,8 +3,6 @@ import './App.css';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
-require('dotenv').config();
-
 /* created a .env file that holds the following secrets, input your access key, secret key, and region for it to work:
 REACT_APP_ACCESS_KEY=youraccesskey
 REACT_APP_SECRET_KEY=yoursecretkey
