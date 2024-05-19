@@ -3,10 +3,12 @@ import './App.css';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
+require('dotenv').config();
+
 AWS.config.update({
-  accessKeyId: 'YOUR_ACCESS_KEY',  // Replace with your access key ID or use environment variables
-  secretAccessKey: 'YOUR_SECRET_KEY',  // Replace with your secret access key or use environment variables
-  region: 'YOUR_REGION' // Replace with your region or use environment variables
+  accessKeyId: process.env.AWS_ACCESS_KEY,  // Replace with your access key ID or use environment variables
+  secretAccessKey: process.env.AWS_SECRET_KEY,  // Replace with your secret access key or use environment variables
+  region: process.env.AWS_REGION // Replace with your region or use environment variables
 });
 
 const s3 = new AWS.S3();

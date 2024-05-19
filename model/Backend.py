@@ -8,6 +8,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from flask import Flask, jsonify
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -16,9 +17,9 @@ CORS(app)
 def get_string():
     # Create a session using your AWS credentials
     session = boto3.Session(
-        aws_access_key_id='YOUR_ACCESS_KEY', # Replace with your access key or use environment variables
-        aws_secret_access_key='YOUR_SECRET_KEY', # Replace with your secret key or use environment variables
-        region_name='YOUR_REGION' # Replace with your region or use environment variables
+        aws_access_key_id= os.getenv('AWS_ACCESS_KEY'), # Replace with your access key or use environment variables
+        aws_secret_access_key= os.getenv('AWS_SECRET_KEY'), # Replace with your secret key or use environment variables
+        region_name= os.getenv('AWS_REGION') # Replace with your region or use environment variables
     )
 
     # Create an S3 resource object using the session
