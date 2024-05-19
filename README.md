@@ -15,11 +15,14 @@ Using this code requires the user to use their own AWS Access Key and Secret Key
 
 ### Setting Up Environment Variables
 While you can just replace the indicated variable values in Backend.py and App.js with the environment variables, this is not very secure. One way you can have greater security when running this program is:
-1. Open you environment variables on your computer by searching for it on your pc, then access the environment variables, click new and add the variables names AWS_ACCESS_KEY, AWS_SECRET_KEY, and AWS_REGION one at a time with their respective values associated with your aws keys.
+1. Create a .env file in the model folder, and add the following:
+    AWS_ACCESS_KEY={insert your access key here}
+    AWS_SECRET_KEY={insert your secret key here}
+    AWS_REGION={insert your region here}
 2. Create a .env file in the frontend folder, and add the following:
-REACT_APP_ACCESS_KEY={insert your access key here}
-REACT_APP_SECRET_KEY={insert your secret key here}
-REACT_APP_REGION={insert your region here}
+    REACT_APP_ACCESS_KEY={insert your access key here}
+    REACT_APP_SECRET_KEY={insert your secret key here}
+    REACT_APP_REGION={insert your region here}
 
 ## Running the Project
 1. On one terminal, navigate into the model directory and start the backend using these commands:
